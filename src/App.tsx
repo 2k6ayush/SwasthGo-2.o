@@ -1,34 +1,51 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import AppLayout from "./components/layout/AppLayout";
-import Dashboard from "./pages/Dashboard";
-import NotFound from "./pages/NotFound";
+import { useState } from "react";
+import { Toaster } from "@/components/ui/sonner";
+import LanguageSelection from "@/pages/LanguageSelection";
+import Home from "@/pages/Home";
+import CattleMap from "@/pages/CattleMap";
+import GrazingStats from "@/pages/GrazingStats";
+import ManageDevices from "@/pages/ManageDevices";
+import BottomNavigation from "@/components/layout/BottomNavigation";
 
-const queryClient = new QueryClient();
+function App() {
+  const [selectedLanguage, setSelectedLanguage] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState("home");
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
+  const handleLanguageSelect = (language: string) => {
+    setSelectedLanguage(language);
+  };
+
+  const renderCurrentPage = () => {
+    switch (currentPage) {
+      case "home":
+        return <Home />;
+      case "cattle-map":
+        return <CattleMap />;
+      case "grazing-stats":
+        return <GrazingStats />;
+      case "manage-devices":
+        return <ManageDevices />;
+      case "help":
+        return <div className="min-h-screen bg-background pb-20 p-4">
+          <h1 className="text-2xl font-bold text-primary mb-4">Help & Support</h1>
+          <p className="text-muted-foreground">Coming soon...</p>
+        </div>;
+      default:
+        return <Home />;
+    }
+  };
+
+  if (!selectedLanguage) {
+    return <LanguageSelection onLanguageSelect={handleLanguageSelect} />;
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      {renderCurrentPage()}
+      <BottomNavigation currentPage={currentPage} onPageChange={setCurrentPage} />
       <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<AppLayout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="live-map" element={<Dashboard />} /> {/* Placeholder */}
-            <Route path="grazing" element={<Dashboard />} />   {/* Placeholder */}
-            <Route path="devices" element={<Dashboard />} />   {/* Placeholder */}
-            <Route path="help" element={<Dashboard />} />      {/* Placeholder */}
-          </Route>
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+    </div>
+  );
+}
 
 export default App;

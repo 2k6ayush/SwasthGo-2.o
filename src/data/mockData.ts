@@ -36,56 +36,56 @@ export interface GrazingStats {
 export const mockCattleData: CattleData[] = [
   {
     id: '1',
-    name: 'Bella',
-    tagNumber: 'CT001',
-    coordinates: [77.5946, 12.9716], // Bangalore area
+    name: 'Ganga',
+    tagNumber: 'COW001',
+    coordinates: [77.5946, 12.9716],
     status: 'grazing',
     batteryLevel: 85,
-    lastUpdate: '2 minutes ago',
+    lastUpdate: '2 mins ago',
     grazingHours: 6.5,
     healthScore: 92
   },
   {
     id: '2',
-    name: 'Moobert',
-    tagNumber: 'CT002',
+    name: 'Lakshmi',
+    tagNumber: 'COW002',
     coordinates: [77.5976, 12.9746],
     status: 'resting',
-    batteryLevel: 72,
-    lastUpdate: '5 minutes ago',
-    grazingHours: 4.2,
+    batteryLevel: 92,
+    lastUpdate: '1 min ago',
+    grazingHours: 5.2,
     healthScore: 88
   },
   {
     id: '3',
-    name: 'Daisy',
-    tagNumber: 'CT003',
+    name: 'Kamdhenu',
+    tagNumber: 'COW003',
     coordinates: [77.5916, 12.9686],
     status: 'moving',
     batteryLevel: 45,
-    lastUpdate: '1 minute ago',
-    grazingHours: 7.1,
+    lastUpdate: '15 mins ago',
+    grazingHours: 4.8,
     healthScore: 95
   },
   {
     id: '4',
-    name: 'Thunder',
-    tagNumber: 'CT004',
+    name: 'Radha',
+    tagNumber: 'COW004',
     coordinates: [77.5986, 12.9756],
     status: 'grazing',
-    batteryLevel: 91,
-    lastUpdate: '3 minutes ago',
-    grazingHours: 5.8,
+    batteryLevel: 78,
+    lastUpdate: '3 mins ago',
+    grazingHours: 5.9,
     healthScore: 90
   },
   {
     id: '5',
-    name: 'Rosie',
-    tagNumber: 'CT005',
+    name: 'Saraswati',
+    tagNumber: 'COW005',
     coordinates: [77.5896, 12.9666],
     status: 'alert',
     batteryLevel: 18,
-    lastUpdate: '8 minutes ago',
+    lastUpdate: '10 mins ago',
     grazingHours: 2.1,
     healthScore: 78
   }
@@ -95,33 +95,33 @@ export const mockCattleData: CattleData[] = [
 export const mockAlerts: Alert[] = [
   {
     id: '1',
-    cattleId: '5',
-    cattleName: 'Rosie',
+    cattleId: '3',
+    cattleName: 'Kamdhenu',
     type: 'low_battery',
     severity: 'high',
-    message: 'Battery level critically low (18%)',
-    timestamp: '10 minutes ago',
+    message: 'Device battery below 25%',
+    timestamp: '10 mins ago',
     resolved: false
   },
   {
     id: '2',
     cattleId: '3',
-    cattleName: 'Daisy',
-    type: 'strayed',
-    severity: 'medium',
-    message: 'Moved beyond designated grazing area',
-    timestamp: '25 minutes ago',
+    cattleName: 'Kamdhenu',
+    type: 'inactive',
+    severity: 'high',
+    message: 'Low activity detected for 2+ hours',
+    timestamp: '15 mins ago',
     resolved: false
   },
   {
     id: '3',
-    cattleId: '2',
-    cattleName: 'Moobert',
-    type: 'inactive',
-    severity: 'low',
-    message: 'No significant movement for 3 hours',
+    cattleId: '1',
+    cattleName: 'Ganga',
+    type: 'strayed',
+    severity: 'medium',
+    message: 'Animal moved outside designated area',
     timestamp: '1 hour ago',
-    resolved: true
+    resolved: false
   }
 ];
 

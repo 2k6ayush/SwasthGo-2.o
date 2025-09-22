@@ -2,47 +2,48 @@
 @tailwind components;
 @tailwind utilities;
 
-/* CattleTrack Agricultural Design System - All colors MUST be HSL */
+/* SwasthGo/CattleTrack Light Green Design System - All colors MUST be HSL */
 
 @layer base {
   :root {
-    /* Agricultural Green Theme */
-    --background: 120 25% 98%;
-    --foreground: 120 15% 15%;
+    /* Light mint/green theme matching the screenshots */
+    --background: 140 40% 98%;     /* Very light mint green */
+    --foreground: 140 20% 20%;     /* Dark green-gray text */
 
-    /* Pasture-inspired cards */
-    --card: 120 30% 96%;
-    --card-foreground: 120 15% 20%;
+    /* Card backgrounds */
+    --card: 0 0% 100%;             /* Pure white cards */
+    --card-foreground: 140 20% 20%;
 
-    --popover: 120 30% 97%;
-    --popover-foreground: 120 15% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 140 20% 20%;
 
-    /* Farm Green Primary */
-    --primary: 130 60% 35%;        /* #388E3C equivalent */
-    --primary-foreground: 120 30% 98%;
-    --primary-light: 130 60% 45%;
+    /* Primary green (matching the design) */
+    --primary: 140 60% 45%;        /* Main green color */
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 140 50% 55%;
 
-    /* Harvest Yellow Secondary */
-    --secondary: 45 95% 55%;       /* #F9A825 equivalent */
-    --secondary-foreground: 120 15% 20%;
-    --secondary-light: 45 95% 65%;
+    /* Secondary/warning colors */
+    --secondary: 45 95% 60%;       /* Warning yellow/orange */
+    --secondary-foreground: 45 20% 20%;
+    --secondary-light: 45 85% 70%;
 
-    /* Soft pastels for UI */
-    --muted: 120 20% 94%;
-    --muted-foreground: 120 10% 45%;
+    /* UI elements */
+    --muted: 140 30% 96%;          /* Light green muted */
+    --muted-foreground: 140 15% 50%;
 
-    --accent: 45 80% 88%;
-    --accent-foreground: 120 15% 25%;
+    --accent: 140 35% 95%;         /* Very light green accent */
+    --accent-foreground: 140 20% 25%;
 
-    /* Alert colors */
-    --destructive: 0 75% 55%;
-    --destructive-foreground: 0 0% 98%;
-    --warning: 35 90% 60%;
-    --success: 130 60% 45%;
+    /* Status colors matching the design */
+    --destructive: 0 75% 60%;      /* Red for alerts */
+    --destructive-foreground: 0 0% 100%;
+    --warning: 35 85% 65%;         /* Orange for warnings */
+    --success: 140 60% 45%;        /* Green for success */
+    --info: 210 70% 60%;           /* Blue for info */
 
-    --border: 120 20% 88%;
-    --input: 120 25% 92%;
-    --ring: 130 60% 35%;
+    --border: 140 25% 90%;         /* Light green borders */
+    --input: 140 30% 96%;
+    --ring: 140 60% 45%;
 
     /* Custom agricultural gradients */
     --gradient-pasture: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-light)));
