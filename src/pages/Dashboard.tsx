@@ -9,6 +9,7 @@ import {
 import StatCard from "@/components/dashboard/StatCard";
 import AlertsList from "@/components/dashboard/AlertsList";
 import CattleMap from "@/components/dashboard/CattleMap";
+import QuickActions from "@/components/dashboard/QuickActions";
 import { mockCattleData, mockAlerts, mockGrazingStats } from "@/data/mockData";
 import farmHero from "@/assets/farm-hero.jpg";
 
@@ -102,20 +103,18 @@ export default function Dashboard() {
         />
       </div>
 
-      {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Cattle Map - Takes 2 columns */}
-        <div className="lg:col-span-2">
-          <CattleMap cattleData={mockCattleData} />
-        </div>
+      {/* Main Content - Cattle Map (integrated layout) */}
+      <div className="space-y-6">
+        <CattleMap cattleData={mockCattleData} />
         
-        {/* Alerts Panel - Takes 1 column */}
-        <div className="lg:col-span-1">
-          <AlertsList 
-            alerts={alerts} 
-            onResolveAlert={handleResolveAlert}
-          />
-        </div>
+        {/* Alerts Section */}
+        <AlertsList 
+          alerts={alerts} 
+          onResolveAlert={handleResolveAlert}
+        />
+        
+        {/* Quick Actions Section */}
+        <QuickActions cattleData={mockCattleData} />
       </div>
 
       {/* Quick Actions */}

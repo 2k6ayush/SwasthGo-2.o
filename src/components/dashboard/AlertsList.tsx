@@ -23,32 +23,41 @@ export default function AlertsList({ alerts, onResolveAlert }: AlertsListProps) 
     }
   };
 
-  const getSeverityColor = (severity: Alert['severity']) => {
-    switch (severity) {
-      case 'high':
-        return 'destructive';
-      case 'medium':
-        return 'secondary';
-      case 'low':
-        return 'outline';
-      default:
-        return 'outline';
+  const getAlertBackground = (type: Alert['type'], severity: Alert['severity']) => {
+    if (type === 'strayed') {
+      return 'bg-red-50 border-red-200';
     }
+    if (type === 'low_battery') {
+      return 'bg-yellow-50 border-yellow-200';
+    }
+    if (type === 'inactive') {
+      return 'bg-blue-50 border-blue-200';
+    }
+    return 'bg-gray-50 border-gray-200';
+  };
+
+  const getAlertTextColor = (type: Alert['type']) => {
+    if (type === 'strayed') return 'text-red-700';
+    if (type === 'low_battery') return 'text-yellow-700';
+    if (type === 'inactive') return 'text-blue-700';
+    return 'text-gray-700';
+  };
+
+  const getAlertBadge = (type: Alert['type']) => {
+    if (type === 'strayed') return 'Animal Strayed';
+    if (type === 'low_battery') return 'Low Battery';
+    if (type === 'inactive') return 'Inactive Animal';
+    return 'Alert';
   };
 
   const activeAlerts = alerts.filter(alert => !alert.resolved);
-  const resolvedAlerts = alerts.filter(alert => alert.resolved);
 
   return (
-    <Card className="h-fit">
+    <Card>
       <CardHeader className="pb-4">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-poppins">
-            Recent Alerts
-          </CardTitle>
-          <Badge variant="outline" className="text-xs">
-            {activeAlerts.length} Active
-          </Badge>
+        <div className="flex items-center gap-2">
+          <AlertTriangle className="w-5 h-5 text-destructive" />
+          <CardTitle className="text-lg font-poppins">Recent Alerts/Notifications</CardTitle>
         </div>
       </CardHeader>
       
@@ -59,83 +68,52 @@ export default function AlertsList({ alerts, onResolveAlert }: AlertsListProps) 
             <p className="text-sm">No active alerts</p>
           </div>
         ) : (
-          <>
-            {/* Active Alerts */}
-            <div className="space-y-3">
-              {activeAlerts.map((alert) => {
-                const Icon = getAlertIcon(alert.type);
-                return (
-                  <div 
-                    key={alert.id}
-                    className="flex items-start gap-3 p-3 bg-card/50 rounded-lg border border-border"
-                  >
-                    <div className={`p-2 rounded-full ${
-                      alert.severity === 'high' 
-                        ? 'bg-destructive/10 text-destructive' 
-                        : alert.severity === 'medium'
-                        ? 'bg-secondary/10 text-secondary-foreground'
-                        : 'bg-muted text-muted-foreground'
-                    }`}>
-                      <Icon className="w-4 h-4" />
+          <div className="space-y-3">
+            {activeAlerts.map((alert) => (
+              <div 
+                key={alert.id}
+                className={`p-4 rounded-lg border ${getAlertBackground(alert.type, alert.severity)}`}
+              >
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <h3 className={`font-semibold ${getAlertTextColor(alert.type)}`}>
+                        {alert.cattleName} has {alert.type === 'strayed' ? 'moved outside safe zone' : 
+                         alert.type === 'low_battery' ? `device battery is low (${alert.message.match(/\d+/)?.[0]}%)` :
+                         'inactive for 2 hours'}
+                      </h3>
                     </div>
-                    
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <p className="font-medium text-sm text-foreground">
-                          {alert.cattleName}
-                        </p>
-                        <Badge variant={getSeverityColor(alert.severity)} className="text-xs">
-                          {alert.severity}
-                        </Badge>
-                      </div>
-                      <p className="text-sm text-muted-foreground mb-1">
-                        {alert.message}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {alert.timestamp}
-                      </p>
-                    </div>
+                    <p className="text-sm text-muted-foreground mb-1">
+                      {alert.timestamp}
+                    </p>
+                  </div>
+                  
+                  <div className="flex flex-col items-end gap-2">
+                    <Badge 
+                      className={`text-xs ${
+                        alert.type === 'strayed' ? 'bg-red-100 text-red-700' :
+                        alert.type === 'low_battery' ? 'bg-yellow-100 text-yellow-700' :
+                        'bg-blue-100 text-blue-700'
+                      }`}
+                    >
+                      {getAlertBadge(alert.type)}
+                    </Badge>
                     
                     {onResolveAlert && (
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 w-8 p-0"
+                        className="h-6 w-6 p-0"
                         onClick={() => onResolveAlert(alert.id)}
                       >
-                        <X className="w-4 h-4" />
+                        <X className="w-3 h-3" />
                       </Button>
                     )}
                   </div>
-                );
-              })}
-            </div>
-
-            {/* Show resolved alerts if any */}
-            {resolvedAlerts.length > 0 && (
-              <div className="border-t pt-3">
-                <p className="text-xs text-muted-foreground mb-2">Recently Resolved</p>
-                {resolvedAlerts.slice(0, 2).map((alert) => {
-                  const Icon = getAlertIcon(alert.type);
-                  return (
-                    <div 
-                      key={alert.id}
-                      className="flex items-start gap-3 p-2 opacity-60"
-                    >
-                      <div className="p-1 rounded-full bg-muted text-muted-foreground">
-                        <Icon className="w-3 h-3" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs text-muted-foreground">
-                          {alert.cattleName}: {alert.message}
-                        </p>
-                      </div>
-                    </div>
-                  );
-                })}
+                </div>
               </div>
-            )}
-          </>
+            ))}
+          </div>
         )}
       </CardContent>
     </Card>

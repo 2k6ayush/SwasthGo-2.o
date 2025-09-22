@@ -1,143 +1,185 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, Maximize2, Filter } from "lucide-react";
+import { MapPin, Plus, Minus, Maximize2, Settings } from "lucide-react";
 import { CattleData } from "@/data/mockData";
-import farmHero from "@/assets/farm-hero.jpg";
 
 interface CattleMapProps {
   cattleData: CattleData[];
 }
 
 export default function CattleMap({ cattleData }: CattleMapProps) {
-  const getStatusColor = (status: CattleData['status']) => {
+  const getMarkerColor = (status: CattleData['status']) => {
     switch (status) {
       case 'grazing':
-        return 'bg-success text-success-foreground';
+        return 'bg-green-500';
       case 'resting':
-        return 'bg-secondary text-secondary-foreground';
+        return 'bg-blue-500';
       case 'moving':
-        return 'bg-primary text-primary-foreground';
+        return 'bg-yellow-500';
       case 'alert':
-        return 'bg-destructive text-destructive-foreground';
+        return 'bg-red-500';
       default:
-        return 'bg-muted text-muted-foreground';
+        return 'bg-gray-500';
     }
   };
-
-  const getStatusLabel = (status: CattleData['status']) => {
-    switch (status) {
-      case 'grazing':
-        return '🌿 Grazing';
-      case 'resting':
-        return '😴 Resting';
-      case 'moving':
-        return '🚶 Moving';
-      case 'alert':
-        return '⚠️ Alert';
-      default:
-        return status;
-    }
-  };
-
-  // Group cattle by status for the legend
-  const statusCounts = cattleData.reduce((acc, cattle) => {
-    acc[cattle.status] = (acc[cattle.status] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
 
   return (
-    <Card className="h-fit">
-      <CardHeader className="pb-4">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-poppins">
-            Cattle Location Map
-          </CardTitle>
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm">
-              <Filter className="w-4 h-4 mr-2" />
-              Filter
-            </Button>
-            <Button variant="outline" size="sm">
-              <Maximize2 className="w-4 h-4" />
-            </Button>
-          </div>
-        </div>
-      </CardHeader>
-      
-      <CardContent className="space-y-4">
-        {/* Map Container */}
-        <div className="relative w-full h-64 bg-muted rounded-lg overflow-hidden">
-          {/* Background farm image */}
-          <img 
-            src={farmHero} 
-            alt="Farm Map" 
-            className="w-full h-full object-cover"
-          />
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {/* Map Section - 2 columns */}
+      <div className="lg:col-span-2">
+        <Card>
+          <CardHeader className="pb-3">
+            <div className="flex items-center gap-2">
+              <MapPin className="w-5 h-5 text-success" />
+              <CardTitle className="text-lg font-poppins">Live Cattle Locations</CardTitle>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Click on markers to view detailed information
+            </p>
+          </CardHeader>
           
-          {/* Overlay with opacity */}
-          <div className="absolute inset-0 bg-background/60" />
+          <CardContent>
+            <div className="relative w-full h-80 bg-gradient-to-br from-green-50 to-blue-50 rounded-lg overflow-hidden border-2 border-border">
+              {/* Map Background - Simulated street map */}
+              <div className="absolute inset-0 opacity-80">
+                <svg className="w-full h-full" viewBox="0 0 400 300">
+                  {/* Roads */}
+                  <path d="M0 150 L400 150" stroke="#E5E7EB" strokeWidth="4" />
+                  <path d="M200 0 L200 300" stroke="#E5E7EB" strokeWidth="4" />
+                  <path d="M0 100 L400 100" stroke="#F3F4F6" strokeWidth="2" />
+                  <path d="M0 200 L400 200" stroke="#F3F4F6" strokeWidth="2" />
+                  <path d="M100 0 L100 300" stroke="#F3F4F6" strokeWidth="2" />
+                  <path d="M300 0 L300 300" stroke="#F3F4F6" strokeWidth="2" />
+                  
+                  {/* Buildings */}
+                  <rect x="50" y="50" width="40" height="40" fill="#F9FAFB" stroke="#E5E7EB" />
+                  <rect x="320" y="80" width="50" height="30" fill="#F9FAFB" stroke="#E5E7EB" />
+                  <rect x="150" y="180" width="35" height="35" fill="#F9FAFB" stroke="#E5E7EB" />
+                  <rect x="280" y="220" width="45" height="25" fill="#F9FAFB" stroke="#E5E7EB" />
+                  
+                  {/* Green areas (pastures) */}
+                  <ellipse cx="120" cy="120" rx="30" ry="25" fill="#DCFCE7" stroke="#86EFAC" strokeWidth="2" strokeDasharray="5,5" />
+                  <ellipse cx="300" cy="200" rx="40" ry="30" fill="#DCFCE7" stroke="#86EFAC" strokeWidth="2" strokeDasharray="5,5" />
+                </svg>
+              </div>
+
+              {/* Map Controls */}
+              <div className="absolute top-4 left-4 flex flex-col gap-1">
+                <Button size="sm" variant="outline" className="w-8 h-8 p-0 bg-white">
+                  <Plus className="w-4 h-4" />
+                </Button>
+                <Button size="sm" variant="outline" className="w-8 h-8 p-0 bg-white">
+                  <Minus className="w-4 h-4" />
+                </Button>
+              </div>
+
+              {/* Geofence Circle */}
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                <div className="w-40 h-40 border-2 border-dashed border-primary/60 rounded-full" />
+              </div>
+
+              {/* Cattle Markers */}
+              {cattleData.map((cattle, index) => {
+                const positions = [
+                  { top: '30%', left: '30%' },
+                  { top: '60%', left: '45%' },
+                  { top: '40%', left: '70%' },
+                  { top: '50%', left: '25%' },
+                  { top: '65%', left: '60%' }
+                ];
+                const position = positions[index % positions.length];
+                
+                return (
+                  <div
+                    key={cattle.id}
+                    className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer group"
+                    style={{ top: position.top, left: position.left }}
+                  >
+                    <div className={`w-8 h-8 rounded-full ${getMarkerColor(cattle.status)} flex items-center justify-center shadow-lg border-2 border-white hover:scale-110 transition-transform`}>
+                      <span className="text-white text-xs font-bold">🐄</span>
+                    </div>
+                    
+                    {/* Tooltip */}
+                    <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                      <div className="bg-white border border-gray-200 rounded-lg p-3 shadow-xl min-w-32">
+                        <p className="font-semibold text-sm text-gray-900">{cattle.name}</p>
+                        <p className="text-xs text-gray-600">{cattle.tagNumber}</p>
+                        <p className="text-xs text-gray-600 capitalize">{cattle.status}</p>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+
+              {/* Attribution */}
+              <div className="absolute bottom-2 right-2 text-xs text-muted-foreground bg-white/80 px-2 py-1 rounded">
+                📍 Leaflet | © OpenStreetMap
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Cattle Status Panel - 1 column */}
+      <div className="lg:col-span-1">
+        <Card>
+          <CardHeader className="pb-3">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-success rounded-full animate-pulse" />
+              <CardTitle className="text-lg font-poppins">Cattle Status</CardTitle>
+            </div>
+          </CardHeader>
           
-          {/* Cattle markers positioned randomly across the map */}
-          {cattleData.map((cattle, index) => {
-            // Create consistent but random positions for demo
-            const positions = [
-              { top: '20%', left: '25%' },
-              { top: '45%', left: '60%' },
-              { top: '35%', left: '80%' },
-              { top: '65%', left: '40%' },
-              { top: '55%', left: '15%' }
-            ];
-            const position = positions[index % positions.length];
-            
-            return (
-              <div
-                key={cattle.id}
-                className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer group"
-                style={{ top: position.top, left: position.left }}
-              >
-                <div className={`w-8 h-8 rounded-full ${getStatusColor(cattle.status)} flex items-center justify-center shadow-lg hover:scale-110 transition-transform`}>
-                  <MapPin className="w-4 h-4" />
+          <CardContent className="space-y-4">
+            {cattleData.map((cattle) => (
+              <div key={cattle.id} className="p-4 bg-card/50 rounded-lg border border-border space-y-3">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold text-foreground">{cattle.name}</h3>
+                  <Badge 
+                    className={`text-xs ${
+                      cattle.status === 'grazing' ? 'bg-green-100 text-green-700' :
+                      cattle.status === 'resting' ? 'bg-blue-100 text-blue-700' :
+                      cattle.status === 'moving' ? 'bg-yellow-100 text-yellow-700' :
+                      'bg-red-100 text-red-700'
+                    }`}
+                  >
+                    {cattle.status}
+                  </Badge>
                 </div>
                 
-                {/* Tooltip */}
-                <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                  <div className="bg-popover border border-border rounded-lg p-3 shadow-lg min-w-40">
-                    <p className="font-semibold text-sm">{cattle.name}</p>
-                    <p className="text-xs text-muted-foreground">{cattle.tagNumber}</p>
-                    <Badge className={`mt-1 text-xs ${getStatusColor(cattle.status)}`}>
-                      {getStatusLabel(cattle.status)}
-                    </Badge>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Battery: {cattle.batteryLevel}%
-                    </p>
+                <div className="space-y-2 text-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground flex items-center gap-2">
+                      🔋 Battery
+                    </span>
+                    <span className="font-medium">{cattle.batteryLevel}%</span>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground flex items-center gap-2">
+                      🕐 Last Seen
+                    </span>
+                    <span className="font-medium">{cattle.lastUpdate}</span>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground flex items-center gap-2">
+                      📍 Distance
+                    </span>
+                    <span className="font-medium">2.3 km</span>
                   </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Legend */}
-        <div className="space-y-2">
-          <p className="text-sm font-medium text-foreground">Status Legend</p>
-          <div className="grid grid-cols-2 gap-2">
-            {Object.entries(statusCounts).map(([status, count]) => (
-              <div key={status} className="flex items-center gap-2">
-                <div className={`w-3 h-3 rounded-full ${getStatusColor(status as CattleData['status'])}`} />
-                <span className="text-xs text-muted-foreground">
-                  {getStatusLabel(status as CattleData['status'])} ({count})
-                </span>
+                
+                <Button variant="outline" size="sm" className="w-full">
+                  <Settings className="w-4 h-4 mr-2" />
+                  Manage
+                </Button>
               </div>
             ))}
-          </div>
-        </div>
-
-        <Button variant="outline" className="w-full">
-          <MapPin className="w-4 h-4 mr-2" />
-          View Full Map
-        </Button>
-      </CardContent>
-    </Card>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
   );
 }
